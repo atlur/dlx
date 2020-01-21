@@ -111,8 +111,8 @@ func (m *Matrix) PushItem(row, colHead *Element) *Element {
 }
 
 // Finds any solutions within the matrix at the given level.
-func (m *Matrix) search(k int, stopEarly bool) {
-	if stopEarly && len(m.solutions) > 0 {
+func (m *Matrix) search(k int, maxSolutions int) {
+	if maxSolutions > 0 && len(m.solutions) >= maxSolutions {
 		return
 	}
 	if m.Head() == nil {
@@ -136,7 +136,7 @@ func (m *Matrix) search(k int, stopEarly bool) {
 		for j := r.Right(); j != r; j = j.Right() {
 			m.cover(j.column)
 		}
-		m.search(k+1, stopEarly)
+		m.search(k+1, maxSolutions)
 		r = m.o[k]
 
 		m.o[k] = nil
@@ -154,8 +154,8 @@ func (m *Matrix) search(k int, stopEarly bool) {
 // Solve invokes a search for solutions from the root (level 0) and returns
 // a slice of all found solutions as a slice of strings denoting valid
 // constraint options that exactly covers the problem space.
-func (m *Matrix) Solve(stopEarly bool) [][]string {
-	m.search(0, stopEarly)
+func (m *Matrix) Solve(maxSolutions int) [][]string {
+	m.search(0, maxSolutions)
 	return m.solutions
 }
 
